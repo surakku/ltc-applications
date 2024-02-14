@@ -1,0 +1,2 @@
+best epoch, train loss, train mae, valid loss, valid mae, test loss, test mae
+00000001, 0.41369006, 0.40963703, 0.18642469, 0.33411774, 0.18443289, 0.33416966
