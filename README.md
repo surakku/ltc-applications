@@ -79,4 +79,12 @@ After the script is finished there should be a file ```results/har/ctrnn_32.csv`
 
 Run the ```main.m``` file to get trajectory length results for the desired setting tuneable in the code. 
 
+## Research objectives
 
+- [ ] Find dataset for chosen application
+- [ ] Train 19 neuron model
+- [ ] Train 32 neuron model
+- [ ] Train 64 nueron model
+- [ ] Load models post training
+- [ ] Application demo?
+- [ ] Trajectory length if matlab available?
