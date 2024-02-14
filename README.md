@@ -75,7 +75,7 @@ After the script is finished there should be a file ```results/har/ctrnn_32.csv`
 | Validation evaluation interval | 1 | Interval of training epochs when the metrics on the validation are evaluated  | 
 
 
-# Trajectory Length Analysis
+## Trajectory Length Analysis
 
 Run the ```main.m``` file to get trajectory length results for the desired setting tuneable in the code. 
 
