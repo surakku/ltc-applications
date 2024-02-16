@@ -241,8 +241,10 @@ def load_trace(df):
     symp4 = df["Symptom 4"].fillna(20).values.astype(np.float32)
     symp5 = df["Symptom 5"].fillna(20).values.astype(np.float32)
     
+    ## Stack all mapped values
     features = np.stack([age, mGeneF, fGeneF, matGeneF, patGeneF, bCell, mAge, fAge, bCell, statusF, respRateF, hRateF, t1, t2, t3, t4, t5, followUpF, genderF, birthAspF, autDefectF, birthPlaceF, folicAcidF, matIllF, radExpF, subAbuseF, assistConceptionF, pregAnomF, abort, bDefectsF, wbCell, btResultF, symp1, symp2, symp3, symp4, symp5], axis=-1)
     
+    ## Map disorders into array
     try:
         disorder = df["Disorder Subclass"].fillna("").values
         disorderF = np.empty(btResult.shape[0],dtype=np.int32)
@@ -258,7 +260,7 @@ def load_trace(df):
     
 
 
-
+## Cut 2 arrays into matching size sequences
 def cut_in_sequences(x, y, seq_len, inc=1):
     
 
@@ -284,16 +286,22 @@ class GeneticData:
         df = pd.read_csv("data/genes/train.csv")
         x, y = load_trace(df)
         
+        ## Form training data
         train_x, train_y = cut_in_sequences(x, y, seq_len, inc=4)
         print(train_x.shape, train_y.shape)
         self.train_x = np.stack(train_x, axis=0)
         self.train_y = np.stack(train_y, axis=0)
         total_seqs = self.train_x.shape[1]
+        
+        ## Randomize data
         permutation = np.random.RandomState(8302005).permutation(total_seqs)
         print(permutation.shape)
+        
+        ## First 10% as valid, Next 15% as test, Last 75% as train
         valid_size = int(0.1 * total_seqs)
         test_size = int(0.15 * total_seqs)
         
+        ## Split into valid, test, and train pairs
         self.valid_x = self.train_x[:, permutation[:valid_size]]
         self.valid_y = self.train_y[:, permutation[:valid_size]]
         self.test_x = self.train_x[:, permutation[valid_size : valid_size + test_size]]
@@ -301,6 +309,7 @@ class GeneticData:
         self.train_x = self.train_x[:, permutation[valid_size + test_size :]]
         self.train_y = self.train_y[:, permutation[valid_size + test_size :]]   
         
+    ## Given batch size, create batches
     def iterate_train(self, batch_size=16):
         total_seqs = self.train_x.shape[1]
         permutation = np.random.permutation(total_seqs)
@@ -325,6 +334,7 @@ class GeneModel:
         self.model_size = model_size
         head = self.x
         
+        ## Set LTC cell parameters
         self.wm = ltc.LTCCell(model_size)
         if model_type.endswith("_rk"):
             self.wm._solver = ltc.ODESolver.RungeKutta
@@ -333,18 +343,21 @@ class GeneModel:
         else:
             self.wm._solver = ltc.ODESolver.SemiImplicit
         
+        ## Create RNN model using LTC Cell
         head, _ = tf.nn.dynamic_rnn(
             self.wm, head, dtype=tf.float32, time_major=True
         )
         self.constrain_op = self.wm.get_param_constrain_op()
         
-        
+        ## Run through once to get initial loss with random weights
         target_y = tf.expand_dims(self.target_y, axis=-1)
         self.y = tf.layers.Dense(
             1,
             activation=None,
             kernel_initializer=tf.keras.initializers.TruncatedNormal(),
         )(head)
+        
+        ## Get shape and inital loss, set the optimizer
         print("logit shape: ", str(self.y.shape))
         self.loss = tf.reduce_mean(tf.square(target_y - self.y))
         optimizer = tf.train.AdamOptimizer(learning_rate)
@@ -352,9 +365,11 @@ class GeneModel:
         
         self.accuracy = tf.reduce_mean(tf.abs(target_y - self.y))
 
+        ## Create model session
         self.sess = tf.InteractiveSession()
         self.sess.run(tf.global_variables_initializer())
         
+        ## I.O Boilerplate
         self.result_file = os.path.join(
             "results", "genes", "{}_{}.csv".format(model_type, model_size)
         )
@@ -393,6 +408,7 @@ class GeneModel:
         best_valid_stats = (0, 0, 0, 0, 0, 0, 0)
         self.save()
         for e in range(epochs):
+            ## Train Iteratively
             if verbose and e % log_period == 0:
                 test_acc, test_loss = self.sess.run(
                     [self.accuracy, self.loss],
@@ -498,7 +514,4 @@ if __name__ == "__main__":
     
     
     
-    
-
-##TODO: Get other ode solvers working, add model size to save file
 
