@@ -24,6 +24,7 @@ First, we have to download all datasets by running
 source download_datasets.sh
 ```
 This script creates a folder ```data```, where all downloaded datasets are stored.
+
 **NOTE:** Datasets from the following applications will NOT be downloaded as they come from kaggle, please download and add manually from the links provided
 
  - data/genes : https://www.kaggle.com/datasets/aryarishabh/of-genomes-and-genetics-hackerearth-ml-challenge/download?datasetVersionNumber=1
