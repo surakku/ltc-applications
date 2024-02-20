@@ -15,7 +15,7 @@ Continuous-time Gated Recurrent Units (GRU) | https://arxiv.org/abs/1710.04110 |
 ## Requisites
 
 All models were implemented and tested with TensorFlow 1.14.0 and python3 on Ubuntu 16.04 and 18.04 machines.
-All the following steps assume that they are executed under these conditions.
+All the following steps assume that they are executed under these conditions. The following docker image simulates this environment, https://hub.docker.com/layers/tensorflow/tensorflow/1.14.0/images/sha256-87463fd80faa6e7979b78d2f1a26d62262210653eb166b638069ed06ae68dacb?context=explore
 
 ## Preparation
 
