@@ -3,7 +3,7 @@
 [Update] A Pytorch version together with tutorials are added to our sister repository: 
 [https://github.com/mlech26l/ncps](https://github.com/mlech26l/ncps)
 
-This is the official repository for LTC networks described in the paper: https://arxiv.org/abs/2006.04439
+This is an extended repository for LTC networks described in the paper: https://arxiv.org/abs/2006.04439
 This repository allows you to train continuous-time models with backpropagation through-time (BPTT). Available Continuous-time models are: 
 | Models | References |
 | ----- | ----- |
@@ -85,10 +85,16 @@ Run the ```main.m``` file to get trajectory length results for the desired setti
 
 ## Research objectives
 
-- [ ] Find dataset for chosen application
-- [ ] Train 19 neuron model
-- [ ] Train 32 neuron model
-- [ ] Train 64 nueron model
-- [ ] Load models post training
+- [ ] Acquire dataset
+- [ ] Determine model objectives and specific applications
+- [ ] Determine necessary neural depth for each application
+- [ ] Train models
+- [ ] Load models and test accuracy post training
+- [ ] Analyze model internals
 - [ ] Application demo?
 - [ ] Trajectory length if matlab available?
+
+## Possible model alterations
+
+- [ ] Best weight init. (Xavier etc.)
+- [ ] Best activation function (SiLU, GELU etc,)
