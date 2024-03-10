@@ -28,6 +28,7 @@ This script creates a folder ```data```, where all downloaded datasets are store
 **NOTE:** Datasets from the following applications will NOT be downloaded as they come from kaggle, please download and add manually from the links provided
 
  - data/genes : https://www.kaggle.com/datasets/aryarishabh/of-genomes-and-genetics-hackerearth-ml-challenge/download?datasetVersionNumber=1
+ - data/weather_test : https://www.kaggle.com/datasets/muthuj7/weather-dataset/download?datasetVersionNumber=1
 
 ## Training and evaluating the models 
 
@@ -37,6 +38,7 @@ There is exactly one Python module per dataset:
 - Human activity recognition: ```har.py```
 - Traffic volume prediction: ```traffic.py```
 - Ozone level forecasting: ```ozone.py```
+- Genetic disability prediction: ```genes.py```
 
 Each script accepts the following four arguments:
 - ```--model: lstm | ctrnn | ltc | ltc_rk | ltc_ex```
