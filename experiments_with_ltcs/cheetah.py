@@ -46,6 +46,7 @@ class CheetahData:
         print("valid_y.shape:",str(self.valid_y.shape))
         print("test_x.shape:",str(self.test_x.shape))
         print("test_y.shape:",str(self.test_y.shape))
+        print(self.train_x[0])
 
     def _load_files(self,files):
         all_x = []
