@@ -87,7 +87,8 @@ Run the ```main.m``` file to get trajectory length results for the desired setti
 
 ## Research objectives
 
-- [ ] Acquire dataset
+- [x] Acquire dataset
+- [ ] Data preprocessing and batch size determination
 - [ ] Determine model objectives and specific applications
 - [ ] Determine necessary neural depth for each application
 - [ ] Train models
@@ -100,3 +101,4 @@ Run the ```main.m``` file to get trajectory length results for the desired setti
 
 - [ ] Best weight init. (Xavier etc.)
 - [ ] Best activation function (SiLU, GELU etc,)
+- [ ] Test standardized data vs. non
