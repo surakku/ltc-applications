@@ -88,7 +88,7 @@ Run the ```main.m``` file to get trajectory length results for the desired setti
 ## Research objectives
 
 - [x] Acquire dataset
-- [x] Data preprocessing and batch size determination -- Starting with 64, test others
+- [x] Data preprocessing and batch size determination -- Start at 64, try others
 - [ ] Determine model objectives and specific applications
 - [ ] Determine necessary neural depth for each application
 - [ ] Train models
