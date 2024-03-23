@@ -28,6 +28,11 @@ def load_trace():
     wind_head = df["HourlyWindDirection"].values.astype(np.float32)
     gust_speed = df["HourlyWindGustSpeed"].values.astype(np.float32)
     wind_speed = df["HourlyWindSpeed"].values.astype(np.float32)
+    
+    weather_type = df["HourlyPresentWeatherType"].fillna("") ## Consider adding this as a feature somehow, predictions are included
+    weather_type = weather_type.str.extract(r'(/^\W{0,2}\w\w/gm)').fillna("NONE")    
+    
+    features = np.stack([alt_setting, dew_temp, dry_temp, precip, pres_change, humid, sea_pres, stat_pres, vis, wet_temp, wind_head, gust_speed, wind_speed], axis=-1)
 
 
 if __name__ == "__main__":
