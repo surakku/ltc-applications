@@ -30,10 +30,24 @@ def load_trace():
     wind_speed = df["HourlyWindSpeed"].values.astype(np.float32)
     
     weather_type = df["HourlyPresentWeatherType"].fillna("") ## Consider adding this as a feature somehow, predictions are included
-    weather_type = weather_type.str.extract(r'(/^\W{0,2}\w\w/gm)').fillna("NONE")    
+    weather_type = weather_type.str.extract(r"(^\W{0,2}\w\w)").fillna("NONE")
     
     features = np.stack([alt_setting, dew_temp, dry_temp, precip, pres_change, humid, sea_pres, stat_pres, vis, wet_temp, wind_head, gust_speed, wind_speed], axis=-1)
+    
+    return features, weather_type
 
+
+def cut_in_sequences(x, y, seq_len, inc=1):
+    
+    seq_x = []
+    seq_y = []
+    
+    for s in range(0, x.shape[0] - seq_len, inc):
+        start = s
+        end = start + seq_len
+        seq_x.append(x[start:end])
+        seq_y.append(y[start:end])
+    return np.stack(seq_x, axis=1), np.stack(seq_y, axis=1)
 
 if __name__ == "__main__":
     load_trace()
