@@ -89,7 +89,7 @@ Run the ```main.m``` file to get trajectory length results for the desired setti
 
 - [x] Acquire dataset
 - [x] Data preprocessing and batch size determination -- Start at 64, try others
-- [ ] Determine model objectives and specific applications
+- [x] Determine model objectives and specific applications -- Weather type, cloud reporting, maybe temp
 - [ ] Determine necessary neural depth for each application
 - [ ] Train models
 - [ ] Load models and test accuracy post training
