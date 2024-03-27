@@ -29,8 +29,10 @@ def load_trace():
     gust_speed = df["HourlyWindGustSpeed"].values.astype(np.float32)
     wind_speed = df["HourlyWindSpeed"].values.astype(np.float32)
     
-    weather_type = df["HourlyPresentWeatherType"].fillna("") ## Consider adding this as a feature somehow, predictions are included
-    weather_type = weather_type.str.extract(r"(^\W{0,2}\w\w)").fillna("NONE") ##TODO Need to tokenize for model to work
+    df["HourlyPresentWeatherType"] = df["HourlyPresentWeatherType"].str.extract(r"(^\W{0,2}\w\w)").fillna("NONE")
+    weather_col = pd.Categorical(df["HourlyPresentWeatherType"], categories=df["HourlyPresentWeatherType"].fillna("NONE").unique()).codes ## Consider adding this as a feature somehow, predictions are included
+    df["HourlyPresentWeatherType"] = weather_col
+    weather_type = df["HourlyPresentWeatherType"].values.astype(np.float32)
     
     features = np.stack([alt_setting, dew_temp, dry_temp, precip, pres_change, humid, sea_pres, stat_pres, vis, wet_temp, wind_head, gust_speed, wind_speed], axis=-1)
     
@@ -73,17 +75,17 @@ class WeatherData():
         self.train_y = self.train_y[:, permutation[valid_size + test_size :]]
         
         
-        def iterate_train(self, batch_size=16):
-            total_seqs = self.train_x.shape[1]
-            permutation = np.random.permutation(total_seqs)
-            total_batches = total_seqs // batch_size
-                
-            for i in range(total_batches):
-                start = i * batch_size
-                end = start + batch_size
-                batch_x = self.train_x[:, permutation[start:end]]
-                batch_y = self.train_y[:, permutation[start:end]]
-                yield (batch_x, batch_y)
+    def iterate_train(self, batch_size=16):
+        total_seqs = self.train_x.shape[1]
+        permutation = np.random.permutation(total_seqs)
+        total_batches = total_seqs // batch_size
+            
+        for i in range(total_batches):
+            start = i * batch_size
+            end = start + batch_size
+            batch_x = self.train_x[:, permutation[start:end]]
+            batch_y = self.train_y[:, permutation[start:end]]
+            yield (batch_x, batch_y)
                 
 class WeatherModel:
     def __init__(self, model_type, model_size, learning_rate=0.01):
