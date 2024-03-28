@@ -179,6 +179,7 @@ class TrafficModel:
         best_valid_stats = (0, 0, 0, 0, 0, 0, 0)
         self.save()
         for e in range(epochs):
+            print(gesture_data.test_x)
             if verbose and e % log_period == 0:
                 test_acc, test_loss = self.sess.run(
                     [self.accuracy, self.loss],

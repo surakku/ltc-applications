@@ -13,21 +13,21 @@ import datetime as dt
 def load_trace():
     df = pd.read_csv("data/weather/OHARE_96-23.csv")
     date_time = df["DATE"].values
-    alt_setting = df["HourlyAltimeterSetting"].values.astype(np.float32)
-    dew_temp = df["HourlyDewPointTemperature"].values.astype(np.float32)
-    dry_temp = df["HourlyDryBulbTemperature"].values.astype(np.float32)
-    precip = df["HourlyPrecipitation"].values.astype(np.float32)
-    pres_change = df["HourlyPressureChange"].values.astype(np.float32)
-    humid = df["HourlyRelativeHumidity"].values.astype(np.float32)
-    sea_pres = df["HourlySeaLevelPressure"].values.astype(np.float32)
-    stat_pres = df["HourlyStationPressure"].values.astype(np.float32)
+    alt_setting = normalize(df["HourlyAltimeterSetting"]).fillna(0).values.astype(np.float32) ##TODO Normalzie the inputs brrrother https://datascience.stackexchange.com/questions/39916/loss-function-returns-nan-on-time-series-dataset-using-tensorflow
+    dew_temp = normalize(df["HourlyDewPointTemperature"]).fillna(0).values.astype(np.float32)
+    dry_temp = normalize(df["HourlyDryBulbTemperature"]).fillna(0).values.astype(np.float32)
+    precip = normalize(df["HourlyPrecipitation"]).fillna(0).values.astype(np.float32)
+    pres_change = normalize(df["HourlyPressureChange"]).fillna(0).values.astype(np.float32)
+    humid = normalize(df["HourlyRelativeHumidity"]).fillna(0).values.astype(np.float32)
+    sea_pres = normalize(df["HourlySeaLevelPressure"]).fillna(0).values.astype(np.float32)
+    stat_pres = normalize(df["HourlyStationPressure"]).fillna(0).values.astype(np.float32)
     df.loc[df['HourlyVisibility'].astype(str).str.contains('V'), 'HourlyVisibility'] = '10.00'
-    vis = df["HourlyVisibility"].values.astype(np.float32)
-    wet_temp = df["HourlyWetBulbTemperature"].values.astype(np.float32)
+    vis = normalize(df["HourlyVisibility"].astype(np.float32)).fillna(0).values
+    wet_temp = normalize(df["HourlyWetBulbTemperature"]).fillna(0).values.astype(np.float32)
     df.loc[df['HourlyWindDirection'].astype(str).str.contains('VRB'), 'HourlyWindDirection'] = '000'
-    wind_head = df["HourlyWindDirection"].values.astype(np.float32)
-    gust_speed = df["HourlyWindGustSpeed"].values.astype(np.float32)
-    wind_speed = df["HourlyWindSpeed"].values.astype(np.float32)
+    wind_head = normalize(df["HourlyWindDirection"].astype(np.float32)).fillna(0).values
+    gust_speed = normalize(df["HourlyWindGustSpeed"]).fillna(0).values.astype(np.float32)
+    wind_speed = normalize(df["HourlyWindSpeed"]).fillna(0).values.astype(np.float32)
     
     df["HourlyPresentWeatherType"] = df["HourlyPresentWeatherType"].str.extract(r"(^\W{0,2}\w\w)").fillna("NONE")
     weather_col = pd.Categorical(df["HourlyPresentWeatherType"], categories=df["HourlyPresentWeatherType"].fillna("NONE").unique()).codes ## Consider adding this as a feature somehow, predictions are included
@@ -37,6 +37,15 @@ def load_trace():
     features = np.stack([alt_setting, dew_temp, dry_temp, precip, pres_change, humid, sea_pres, stat_pres, vis, wet_temp, wind_head, gust_speed, wind_speed], axis=-1)
     
     return features, weather_type
+
+## Min Max normalization
+def normalize(data):
+    min_val = np.min(data)
+    max_val = np.max(data)
+
+    scaled_data = (data - min_val) / (max_val - min_val)
+
+    return(scaled_data)
 
 
 def cut_in_sequences(x, y, seq_len, inc=1):
@@ -85,6 +94,7 @@ class WeatherData():
             end = start + batch_size
             batch_x = self.train_x[:, permutation[start:end]]
             batch_y = self.train_y[:, permutation[start:end]]
+
             yield (batch_x, batch_y)
                 
 class WeatherModel:
@@ -153,7 +163,7 @@ class WeatherModel:
     def restore(self):
         self.saver.restore(self.sess, self.checkpoint_path)
         
-    def fit(self, data, epochs, verbose=True, log_period=50):
+    def fit(self, data, epochs, verbose=True, log_period=10):
 
         best_valid_loss = np.PINF
         best_valid_stats = (0, 0, 0, 0, 0, 0, 0)
@@ -182,7 +192,7 @@ class WeatherModel:
                         test_acc,
                     )
                     self.save()
-
+            
             losses = []
             accs = []
             for batch_x, batch_y in data.iterate_train(batch_size=16):
