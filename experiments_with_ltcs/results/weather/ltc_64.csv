@@ -5,3 +5,4 @@ best epoch, train loss, train mae, valid loss, valid mae, test loss, test mae
 00000001, nan, nan, nan, nan, nan, nan
 00000001, nan, nan, nan, nan, nan, nan
 00000001, nan, nan, nan, nan, nan, nan
+00000052, 17.37472343, 2.17362046, 17.69424248, 2.22647786, 17.18813896, 2.17558527
